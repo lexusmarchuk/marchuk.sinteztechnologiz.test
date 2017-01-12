@@ -3,3 +3,11 @@
 ################################################################################
 
 /Marchuk.SintezTech/bin
+/Marchuk.SintezTech/obj/Debug
+/Marchuk.SintezTech.Models/bin/Debug
+/Marchuk.SintezTech.Models/obj/Debug
+/Marchuk.SintezTech.Repositories/bin/Debug
+/Marchuk.SintezTech.Repositories/obj/Debug
+/Marchuk.SintezTech.Services/bin/Debug
+/Marchuk.SintezTech.Services/obj/Debug
+/packages
