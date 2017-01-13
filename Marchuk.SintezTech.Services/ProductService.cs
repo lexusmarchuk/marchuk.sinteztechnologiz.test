@@ -22,7 +22,7 @@ namespace Marchuk.SintezTech.Services
         /// Adds new Product.
         /// </summary>
         /// <param name="sintezProduct">Product details.</param>
-        public void AddProduct(SintezProduct sintezProduct)
+        public int AddProduct(SintezProduct sintezProduct)
         {
             if (sintezProduct == null)
             {
@@ -34,7 +34,7 @@ namespace Marchuk.SintezTech.Services
                 throw new ArgumentException(nameof(sintezProduct.Name));
             }
 
-            this._repository.Add(sintezProduct);
+            return this._repository.Add(sintezProduct);
         }
 
         /// <summary>

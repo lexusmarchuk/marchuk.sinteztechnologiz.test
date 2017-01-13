@@ -1,7 +1,110 @@
 ﻿
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Food store";
 }
 
-<h2>Index</h2>
 
+<h4>Implemented methods</h4>
+<table class="table table-striped">
+    <tr>
+        <th>Path</th>
+        <th>Type</th>
+        <th></th>
+        <th>Test</th>
+    </tr>
+    <tr>
+        <td>/api/product</td>
+        <td><span class="label label-info">GET</span></td>
+        <td>Returns list of products</td>
+        <td><input type="button" class="btn btn-info" value="Get prodcuts" onclick="getProducts()" /></td>
+    </tr>
+    <tr>
+        <td>/api/product/{1}</td>
+        <td class="bg-info"><span class="label label-info">GET</span></td>
+        <td>Returns product with ID={1}</td>
+        <td><input type="number" id="productId" value="1" /><input type="button" class="btn btn-info" value="Get product" onclick="getProduct($('#productId').val())" /></td>
+    </tr>
+    <tr>
+        <td>/api/product</td>
+        <td><span class="label label-success">POST</span></td>
+        <td>Adds product</td>
+        <td><input type="button" class="btn btn-info" value="Add prodcut" onclick="addTestProduct()" /></td>
+    </tr>
+    <tr>
+        <td>/api/order/{1}</td>
+        <td><span class="label label-info">GET</span></td>
+        <td>Returns order with ID={1}</td>
+        <td><input type="number" id="orderId" value="1" /><input type="button" class="btn btn-info" value="Get order" onclick="getOrder($('#orderId').val())" /></td>
+    </tr>
+    <tr>
+        <td>/api/order</td>
+        <td><span class="label label-success">POST</span></td>
+        <td>Adds order</td>
+        <td><input type="button" class="btn btn-info" value="Add order" onclick="addTestOrder()" /></td>
+    </tr>
+</table>
+
+<script type="text/javascript">
+    function getProduct(id) {
+        $.get("/api/product/" + id, function (data) {
+            alert(JSON.stringify(data));
+        });
+    }
+
+    function getProducts() {
+        $.get("/api/product", function (data) {
+            alert(JSON.stringify(data));
+        });
+    }
+
+    function addTestProduct() {
+        var date = new Date();
+        var testProduct = {
+            Name: "random product " + date.getMilliseconds(),
+            Price: date.getSeconds()
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/api/product",
+            data: JSON.stringify(testProduct),
+            success: function (data) {
+                getProduct(data);
+            },
+            error: function (data) {
+                alert(data);
+            },
+            contentType: 'application/json',
+            dataType: "JSON"
+        });
+    }
+
+    function getOrder(id) {
+        $.get("/api/order/" + id, function (data) {
+            alert(JSON.stringify(data));
+        });
+    }
+
+    function addTestOrder() {
+        var date = new Date();
+        var testOrder = {
+            CustomerInfo: { FullName: "customer #" + date.getMinutes(), Email: "test@test.com" },
+            ShipTo: { ShipToAddress: "shipping address"},
+            Products: [{ ProductId: 1, Amount: date.getSeconds() }, { ProductId: 2, Amount: date.getSeconds() }, ]
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/api/order",
+            data: JSON.stringify(testOrder),
+            success: function (data) {
+                getOrder(data);
+            },
+            error: function (data) {
+                alert(data);
+            },
+            contentType: 'application/json',
+            dataType: "JSON"
+        });
+    }
+</script>

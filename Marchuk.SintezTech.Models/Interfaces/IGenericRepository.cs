@@ -9,7 +9,7 @@ namespace Marchuk.SintezTech.Models.Interfaces
 {
     public interface IGenericRepository<T>
     {
-        void Add(T product);
+        int Add(T product);
         T Get(int id);
         IEnumerable<T> GetAll();
     }

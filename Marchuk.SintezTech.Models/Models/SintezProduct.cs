@@ -26,6 +26,7 @@ namespace Marchuk.SintezTech.Core.Models
         /// <summary>
         /// Product Price.
         /// </summary>
+        [Required]
         public float Price { get; set; }
     }
 }

@@ -37,11 +37,11 @@ namespace Marchuk.SintezTech.Services
         /// Submits Order.
         /// </summary>
         /// <param name="orderRequest">Order to Submit.</param>
-        public void PlaceOrder(SintezOrder orderRequest)
+        public int PlaceOrder(SintezOrder orderRequest)
         {
             this.ValidateOrder(orderRequest);
 
-            this._repository.Add(orderRequest);
+            return this._repository.Add(orderRequest);
         }
 
         /// <summary>

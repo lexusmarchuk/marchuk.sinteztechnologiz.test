@@ -15,11 +15,28 @@ namespace Marchuk.SintezTech.Repositories
 {
     public class ProductRepository : IGenericRepository<SintezProduct>
     {
-        public void Add(SintezProduct product)
+        /// <summary>
+        /// Adds new product.
+        /// </summary>
+        /// <param name="product">Product boject.</param>
+        /// <returns>New Product Id.</returns>
+        public int Add(SintezProduct product)
         {
             using (IDbConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings[Constants.CONNECTIONSTRING].ConnectionString))
             {
-                db.Execute("addProduct", param: product, commandType: CommandType.StoredProcedure);
+                var p = new DynamicParameters(
+                    new
+                    {
+                        name = product.Name,
+                        price = product.Price
+                    });
+
+                p.Add("@id", DbType.Int32, direction: ParameterDirection.ReturnValue);
+
+                db.ExecuteScalar<int>("addProduct", p, commandType: CommandType.StoredProcedure);
+
+                int id = p.Get<int>("@id");
+                return id;
             }
         }
 

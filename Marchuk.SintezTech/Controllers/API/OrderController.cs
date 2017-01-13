@@ -31,12 +31,16 @@ namespace Marchuk.SintezTech.Controllers.API
         }
 
         // POST: api/Order
-        public void Post([FromBody]SintezOrder model)
+        public int Post([FromBody]SintezOrder model)
         {
+            int id = -1;
+
             if (ModelState.IsValid)
             {
-                this._service.PlaceOrder(model);
+                id = this._service.PlaceOrder(model);
             }
+
+            return id;
         }
 
         // PUT: api/Order/5

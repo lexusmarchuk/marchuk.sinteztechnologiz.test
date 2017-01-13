@@ -31,12 +31,16 @@ namespace Marchuk.SintezTech.Controllers.API
         }
 
         // POST: api/Product
-        public void Post([FromBody]SintezProduct model)
+        public int Post([FromBody]SintezProduct model)
         {
+            int id = -1;
+
             if (ModelState.IsValid)
             {
-                this._productService.AddProduct(model);
+                id = this._productService.AddProduct(model);
             }
+
+            return id;
         }
 
         // PUT: api/Product/5

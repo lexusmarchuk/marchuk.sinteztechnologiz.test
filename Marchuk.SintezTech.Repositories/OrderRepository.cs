@@ -15,20 +15,36 @@ namespace Marchuk.SintezTech.Repositories
 {
     public class OrderRepository : IGenericRepository<SintezOrder>
     {
-        public void Add(SintezOrder order)
+        /// <summary>
+        /// Adds new Order.
+        /// </summary>
+        /// <param name="order">order object.</param>
+        /// <returns>New Order Id.</returns>
+        public int Add(SintezOrder order)
         {
             using (IDbConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings[Constants.CONNECTIONSTRING].ConnectionString))
             {
-                var p = new DynamicParameters();
-                p.Add("@customerFullName", order.CustomerInfo.FullName);
-                p.Add("@customerEmail", order.CustomerInfo.Email);
-                p.Add("@shipToAddress", order.ShipTo.ShipToAddress);
-                p.Add("@products", order.Products.AsTableValuedParameter("dbo.OrderProductTable", orderedColumnNames: new string[] { "ProductId", "Amount" }));
+                var p = new DynamicParameters(new {
+                    customerFullName = order.CustomerInfo.FullName,
+                    customerEmail = order.CustomerInfo.Email,
+                    shipToAddress = order.ShipTo.ShipToAddress,
+                    products = order.Products.AsTableValuedParameter("dbo.OrderProductTable", orderedColumnNames: new string[] { "ProductId", "Amount" })
+                });
+
+                p.Add("@id", DbType.Int32, direction: ParameterDirection.ReturnValue);
 
                 db.Execute("addOrder", p, commandType: CommandType.StoredProcedure);
+
+                int id = p.Get<int>("@id");
+                return id;
             }
         }
 
+        /// <summary>
+        /// Returns Order.
+        /// </summary>
+        /// <param name="id">Order Id.</param>
+        /// <returns>SintezOrder object</returns>
         public SintezOrder Get(int id)
         {
             using (IDbConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings[Constants.CONNECTIONSTRING].ConnectionString))
@@ -39,23 +55,27 @@ namespace Marchuk.SintezTech.Repositories
                 
                 using (var order = db.QueryMultiple("getOrder", p, commandType: CommandType.StoredProcedure))
                 {
-                    var details = order.Read().Single();
-                    var products = order.Read<SintezOrderProduct>().ToArray();
+                    var details = order.Read().SingleOrDefault();
 
-                    result = new SintezOrder
+                    if (details != null)
                     {
-                        Id = id,
-                        CustomerInfo = new SintezCustomer
+                        var products = order.Read<SintezOrderProduct>().ToArray();
+
+                        result = new SintezOrder
                         {
-                            FullName = details.CustomerFullName,
-                            Email = details.CustomerEmail
-                        },
-                        ShipTo = new SintezOrderShipmentInfo
-                        {
-                            ShipToAddress = details.ShipToAddress
-                        },
-                        Products = products
-                    };
+                            Id = id,
+                            CustomerInfo = new SintezCustomer
+                            {
+                                FullName = details.CustomerFullName,
+                                Email = details.CustomerEmail
+                            },
+                            ShipTo = new SintezOrderShipmentInfo
+                            {
+                                ShipToAddress = details.ShipToAddress
+                            },
+                            Products = products
+                        };
+                    }
                 }
 
                 return result;

@@ -10,7 +10,18 @@ namespace Marchuk.SintezTech.Core.Interfaces
 {
     public interface IOrderService
     {
-        void PlaceOrder(SintezOrder orderRequest);
+        /// <summary>
+        /// Submits Order.
+        /// </summary>
+        /// <param name="orderRequest">Order to Submit.</param>
+        /// <returns>New Order Id.</returns>
+        int PlaceOrder(SintezOrder orderRequest);
+
+        /// <summary>
+        /// Returns order details.
+        /// </summary>
+        /// <param name="id">Order Id.</param>
+        /// <returns>SintezOrder object.</returns>
         SintezOrder GetOrder(int id);
     }
 }
